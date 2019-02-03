@@ -16,6 +16,9 @@ node app.js
 ```
 
 ## Roadmaps
+- [ ] Dockerization
+    - For easy deployment.
+
 - [ ] Authentication
     - It seems that the mobile-facing API, although requires no authentication, has a rate-limit on unauthenticated requests. Therefore authentication is needed for simultaneous monitoring of multiple user's posts.
 
