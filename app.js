@@ -27,8 +27,12 @@ const AccountUids = {
     GNZ48: '5675361083',
     SNH48: '2689280541',
 }
+const GroupChatIds = {
+    FanClubOne: 220334609,
+    FanClubTwo: 517837042,
+}
 
-//Timestamps
+// Timestamps
 let lastScanTimestamps = {
     [AccountUids.HANA]: Date.now(), // Hana
     [AccountUids.GNZ48]: Date.now(), // GNZ48
@@ -81,16 +85,19 @@ async function scanMemberPost(user_id, user_name) {
 }
 
 async function sendWebsocketMessage(message) {
-    const payload = {
-        action: 'send_group_msg',
-        params: {
-            group_id: 220334609,
-            message,
+    const makePayload = (groupChatId) => {
+        return {
+            action: 'send_group_msg',
+            params: {
+                group_id: groupChatId,
+                message,
+            }
         }
     }
     try {
         await wsp.open();
-        wsp.send(JSON.stringify(payload));
+        wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubOne)));
+        wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubTwo)));
     } catch(err) {
         console.error(err);
     } finally {
