@@ -1,6 +1,7 @@
 let Axios = require('axios');
 let WebSocketAsPromised = require('websocket-as-promised');
 let W3CWebSocket = require('websocket').w3cwebsocket;
+let logger = require('./logger');
 
 // Config for websocket-as-promised
 const wsp = new WebSocketAsPromised('ws://localhost:6700', {
@@ -49,7 +50,7 @@ class Post {
 }
 
 async function scanOfficialAccountPost(user_id, user_name) {
-    console.log('Scanning official account ' + user_name);
+    logger.log({ level: 'info', message: 'Scanning official account ' + user_name });
     try {
         let resp = await axiosInstance.get('https://m.weibo.cn/profile/info?uid='+user_id, { headers });
         const thisScanTimestamp = Date.now();
@@ -61,13 +62,12 @@ async function scanOfficialAccountPost(user_id, user_name) {
         }
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
-        console.log(err);
+        logger.log({ level: 'error', message: err });
     }
-    console.log(user_name + ' account scan complete');
 }
 
 async function scanMemberPost(user_id, user_name) {
-    console.log('Scanning member post');
+    logger.log({ level: 'info', message: 'Scanning member post' });
     try {
         let resp = await axiosInstance.get('https://m.weibo.cn/profile/info?uid=5786332015', { headers });
         const thisScanTimestamp = Date.now();
@@ -79,9 +79,8 @@ async function scanMemberPost(user_id, user_name) {
         }
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
-        console.log(err);
+        logger.log({ level: 'error', message: err });
     }
-    console.log('Member post scan complete');
 }
 
 async function sendWebsocketMessage(message) {
@@ -96,16 +95,18 @@ async function sendWebsocketMessage(message) {
     }
     try {
         await wsp.open();
+        logger.log({ level: 'info', message: 'Broadcasting message: ' + message });
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubOne)));
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubTwo)));
     } catch(err) {
-        console.error(err);
+        logger.log({ level: 'error', message: err });
     } finally {
         await wsp.close();
     }
 }
 
 async function main() {
+    logger.log({ level: 'info', message: 'Concurrent scan started' });
     let taskPromises = [];
     taskPromises.push(scanMemberPost(AccountUids.HANA, AccountNames.HANA));
     taskPromises.push(scanOfficialAccountPost(AccountUids.GNZ48, AccountNames.GNZ48));
@@ -115,4 +116,4 @@ async function main() {
 
 setInterval(function() {
     main();
-}, 60000);
+}, 5000);

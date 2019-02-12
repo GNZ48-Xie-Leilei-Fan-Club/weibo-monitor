@@ -1,6 +1,6 @@
 {
   "name": "weibo-monitor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Sina Weibo monitor. Periodically fetches users' newest post to monitor for updates.",
   "main": "app.js",
   "author": "Yuhuai Liu",
@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "websocket": "^1.0.28",
-    "websocket-as-promised": "^0.9.0"
+    "websocket-as-promised": "^0.9.0",
+    "winston": "^3.2.1"
   }
 }
