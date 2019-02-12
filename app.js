@@ -116,4 +116,4 @@ async function main() {
 
 setInterval(function() {
     main();
-}, 5000);
+}, 60000);
