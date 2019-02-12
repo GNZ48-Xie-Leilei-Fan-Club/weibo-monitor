@@ -11,8 +11,8 @@ const logger = createLogger({
     ),
     defaultMeta: { service: 'WeiboMonitor' },
     transports: [
-      new transports.File({ filename: '../weibo-monitor.error.log', level: 'error' }),
-      new transports.File({ filename: '../weibo-monitor.all.log' }),
+      new transports.File({ filename: __dirname + '/../weibo-monitor.error.log', level: 'error' }),
+      new transports.File({ filename: __dirname + '/../weibo-monitor.all.log' }),
       new transports.Console(),
     ]
 });
