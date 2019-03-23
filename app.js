@@ -42,10 +42,19 @@ let lastScanTimestamps = {
 
 // Post
 class Post {
-    constructor(created_at, id, text) {
+    constructor(created_at, id, text, pics) {
         this.created_at = Date.parse(created_at);
         this.id = id;
         this.text = text;
+        this.pics = pics? pics.map(item => new Picture(item.pid, item.url)) : null;
+    }
+}
+
+// Picture
+class Picture {
+    constructor(pid, url) {
+        this.pid = pid;
+        this.url = url;
     }
 }
 
@@ -55,7 +64,7 @@ async function scanOfficialAccountPost(user_id, user_name) {
         let resp = await axiosInstance.get('https://m.weibo.cn/profile/info?uid='+user_id, { headers });
         const thisScanTimestamp = Date.now();
         for (let item of resp.data.data.statuses) {
-            let post = new Post(item.created_at, item.id, item.text);
+            let post = new Post(item.created_at, item.id, item.text, null);
             if (post.created_at > lastScanTimestamps[user_id] && post.text.includes('蕾蕾')) {
                 await sendWebsocketMessage(user_name + '官博发了一条提到蕾蕾的微博。点击链接查看: https://m.weibo.cn/status/' + post.id);
             }
@@ -72,15 +81,26 @@ async function scanMemberPost(user_id, user_name) {
         let resp = await axiosInstance.get('https://m.weibo.cn/profile/info?uid=5786332015', { headers });
         const thisScanTimestamp = Date.now();
         for (let item of resp.data.data.statuses) {
-            let post = new Post(item.created_at, item.id, item.text);
+            let post = new Post(item.created_at, item.id, item.text, item.pics);
             if (post.created_at > lastScanTimestamps[user_id]) {
-                await sendWebsocketMessage(user_name + '发微博啦~点击链接查看: https://m.weibo.cn/status/' + post.id);
+                await sendWebsocketMessage(makeMessage(user_name, post));
             }
         }
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
         logger.log({ level: 'error', message: err });
     }
+}
+
+function makeMessage(user_name, post) {
+    const messageTitle = user_name + '发微博啦~:';
+    let picsSection = ''
+    if (post.pics) {
+        picsSection = post.pics.map(item => `[CQ:image,file=${item.url}]`).join("");
+    }
+    let textSection = post.text;
+    const footnote = '点击链接查看: https://m.weibo.cn/status/' + post.id
+    return messageTitle + '\n\n' + textSection + '\n' + picsSection + '\n' + footnote;
 }
 
 async function sendWebsocketMessage(message) {
