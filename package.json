@@ -1,6 +1,6 @@
 {
   "name": "weibo-monitor",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A Sina Weibo monitor. Periodically fetches users' newest post to monitor for updates.",
   "main": "app.js",
   "author": "Yuhuai Liu",

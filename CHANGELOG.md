@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added functionality to download images and broadcast actual post content and images to chat groups.
+- Added functionality to broadcast post content and images to chat groups.
 
 ## [0.3.0] 2019-02-11
 ### Added
