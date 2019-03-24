@@ -46,7 +46,7 @@ class Post {
         this.created_at = Date.parse(created_at);
         this.id = id;
         this.text = text;
-        this.pics = pics? pics.map(item => new Picture(item.pid, item.url)) : null;
+        this.pics = pics? pics.map(item => new Picture(item.pid, item.large.url)) : null;
     }
 }
 
