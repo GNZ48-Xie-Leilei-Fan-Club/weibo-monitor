@@ -2,6 +2,7 @@ let Axios = require('axios');
 let WebSocketAsPromised = require('websocket-as-promised');
 let W3CWebSocket = require('websocket').w3cwebsocket;
 let logger = require('./logger');
+let striptags = require('striptags');
 
 // Config for websocket-as-promised
 const wsp = new WebSocketAsPromised('ws://localhost:6700', {
@@ -98,7 +99,8 @@ function makeMessage(user_name, post) {
     if (post.pics) {
         picsSection = post.pics.map(item => `[CQ:image,file=${item.url}]`).join("");
     }
-    let textSection = post.text;
+    // Get rid of all html tags for the text
+    let textSection = striptags(post.text);
     const footnote = '点击链接查看: https://m.weibo.cn/status/' + post.id
     return messageTitle + '\n\n' + textSection + '\n' + picsSection + '\n' + footnote;
 }
