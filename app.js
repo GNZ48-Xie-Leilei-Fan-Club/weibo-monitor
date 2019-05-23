@@ -32,6 +32,7 @@ const AccountUids = {
 const GroupChatIds = {
     FanClubOne: 220334609,
     FanClubTwo: 517837042,
+    TaskForce: 473360164,
 }
 
 // Timestamps
@@ -68,6 +69,9 @@ async function scanOfficialAccountPost(user_id, user_name) {
             let post = new Post(item.created_at, item.id, item.text, null);
             if (post.created_at > lastScanTimestamps[user_id] && post.text.includes('蕾蕾')) {
                 await sendWebsocketMessage(user_name + '官博发了一条提到蕾蕾的微博。点击链接查看: https://m.weibo.cn/status/' + post.id);
+            }
+            if (post.created_at > lastScanTimestamps[user_id] && (post.text.includes('水着') || post.text.includes('mv') || post.text.includes('MV') || post.text.includes('泳装') || post.text.includes('夏天的梦'))) {
+                await sendWebsocketMessage(user_name + '官博发了一条与水着单相关的微博。点击链接查看: https://m.weibo.cn/status/' + post.id);
             }
         }
         lastScanTimestamps[user_id] = thisScanTimestamp;
@@ -120,6 +124,7 @@ async function sendWebsocketMessage(message) {
         logger.log({ level: 'info', message: 'Broadcasting message: ' + message });
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubOne)));
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubTwo)));
+        wsp.send(JSON.stringify(makePayload(GroupChatIds.TaskForce)));
     } catch(err) {
         logger.log({ level: 'error', message: err });
     } finally {
@@ -138,4 +143,4 @@ async function main() {
 
 setInterval(function() {
     main();
-}, 60000);
+}, 20000);
