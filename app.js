@@ -70,9 +70,6 @@ async function scanOfficialAccountPost(user_id, user_name) {
             if (post.created_at > lastScanTimestamps[user_id] && post.text.includes('蕾蕾')) {
                 await sendWebsocketMessage(user_name + '官博发了一条提到蕾蕾的微博。点击链接查看: https://m.weibo.cn/status/' + post.id);
             }
-            if (post.created_at > lastScanTimestamps[user_id] && (post.text.includes('水着') || post.text.includes('mv') || post.text.includes('MV') || post.text.includes('泳装') || post.text.includes('夏天的梦'))) {
-                await sendWebsocketMessage(user_name + '官博发了一条与水着单相关的微博。点击链接查看: https://m.weibo.cn/status/' + post.id);
-            }
         }
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
