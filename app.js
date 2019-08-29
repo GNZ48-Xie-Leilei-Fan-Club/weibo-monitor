@@ -4,6 +4,7 @@ let W3CWebSocket = require('websocket').w3cwebsocket;
 let striptags = require('striptags');
 let Sentry = require('@sentry/node');
 let { SENTRY_DSN_KEY } = require('./local');
+let logger = require('./logger')
 
 // Initialize Sentry client
 Sentry.init({ dsn: SENTRY_DSN_KEY });
