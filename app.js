@@ -1,8 +1,12 @@
 let Axios = require('axios');
 let WebSocketAsPromised = require('websocket-as-promised');
 let W3CWebSocket = require('websocket').w3cwebsocket;
-let logger = require('./logger');
 let striptags = require('striptags');
+let Sentry = require('@sentry/node');
+let { SENTRY_DSN_KEY } = require('./local');
+
+// Initialize Sentry client
+Sentry.init({ dsn: SENTRY_DSN_KEY });
 
 // Config for websocket-as-promised
 const wsp = new WebSocketAsPromised('ws://localhost:6700', {
@@ -32,6 +36,7 @@ const AccountUids = {
 const GroupChatIds = {
     FanClubOne: 220334609,
     FanClubTwo: 517837042,
+    TaskForce: 473360164,
 }
 
 // Timestamps
@@ -73,6 +78,7 @@ async function scanOfficialAccountPost(user_id, user_name) {
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
         logger.log({ level: 'error', message: err });
+        Sentry.captureException(err);
     }
 }
 
@@ -90,6 +96,7 @@ async function scanMemberPost(user_id, user_name) {
         lastScanTimestamps[user_id] = thisScanTimestamp;
     } catch(err) {
         logger.log({ level: 'error', message: err });
+        Sentry.captureException(err);
     }
 }
 
@@ -120,8 +127,10 @@ async function sendWebsocketMessage(message) {
         logger.log({ level: 'info', message: 'Broadcasting message: ' + message });
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubOne)));
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubTwo)));
+        wsp.send(JSON.stringify(makePayload(GroupChatIds.TaskForce)));
     } catch(err) {
         logger.log({ level: 'error', message: err });
+        Sentry.captureException(err);
     } finally {
         await wsp.close();
     }
