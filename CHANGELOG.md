@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unrelease]
+### Added
+- Added `@sentry/node@5.6.2`
+  - Make use of the new dependcy and log to sentry
+- Added `local-dist.js` to keep track of local settings
+  - Added `SENTRY_DSN_KEY`
+
 ## [0.4.1] 2019-03-30
 ### Added
 - Added `striptags` as a dependency
