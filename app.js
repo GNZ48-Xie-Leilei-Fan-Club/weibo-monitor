@@ -126,6 +126,7 @@ async function sendWebsocketMessage(message) {
     try {
         await wsp.open();
         logger.log({ level: 'info', message: 'Broadcasting message: ' + message });
+        Sentry.captureMessage('Broadcasting message: ' + message);
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubOne)));
         wsp.send(JSON.stringify(makePayload(GroupChatIds.FanClubTwo)));
         wsp.send(JSON.stringify(makePayload(GroupChatIds.TaskForce)));
